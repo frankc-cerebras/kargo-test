@@ -8,12 +8,12 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: git@github.com:frankc-cerebras/kargo-test.git
+    repoURL: https://github.com/frankc-cerebras/kargo-test
     targetRevision: HEAD
-    path: rendered/dev
+    path: k8s/rendered/dev
   destination:
     server: https://kubernetes.default.svc
-    namespace: dev
+    namespace: default
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
