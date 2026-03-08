@@ -17,7 +17,7 @@ Install the demo Kargo and Argo CD environments using the official quickstart sc
 curl -L https://raw.githubusercontent.com/akuity/kargo/main/hack/quickstart/install.sh | sh
 ```
 
-*Note: You will likely need to reset the admin password to ArgoCD.*
+Reset the ArgoCD admin password:
 ```bash
 BCRYPT_HASH=$(argocd account bcrypt --password "adminadmin")
 kubectl -n argocd patch secret argocd-secret \
