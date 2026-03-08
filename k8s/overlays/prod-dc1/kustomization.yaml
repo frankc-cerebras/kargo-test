@@ -1,17 +1,16 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
 nameSuffix: -prod-dc1
-
 resources:
 - ../../base
 - configmap.yaml
-
 images:
 - name: nginx
   newName: public.ecr.aws/nginx/nginx
   newTag: "1.25"
-
+- name: public.ecr.aws/nginx/nginx
+  newTag: stable
+  digest: sha256:27d6207bfd9614b1df6a86b5f9ca64e5b7f6d18d08d6243806cf1c52ca3b72e7
 patches:
 - patch: |-
     - op: replace
