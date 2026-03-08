@@ -114,7 +114,7 @@ spec:
             repoURL: https://github.com/frankc-cerebras/kargo-test.git
             sourceBranch: ${{ outputs.gitPush.branch }} # Or whatever git-push outputs
             targetBranch: main
-            title: "Promote Freight ${{ ctx.targetFreight.name }} to dev"
+            title: "Promote Freight ${{ ctx.targetFreight.name }} to test"
         - uses: git-wait-for-pr
           config:
             repoURL: https://github.com/frankc-cerebras/kargo-test.git
@@ -166,7 +166,7 @@ spec:
             repoURL: https://github.com/frankc-cerebras/kargo-test.git
             sourceBranch: ${{ outputs.gitPush.branch }}
             targetBranch: main
-            title: "Promote Freight ${{ ctx.targetFreight.name }} to dev"
+            title: "Promote Freight ${{ ctx.targetFreight.name }} to prod"
         - uses: git-wait-for-pr
           config:
             repoURL: https://github.com/frankc-cerebras/kargo-test.git

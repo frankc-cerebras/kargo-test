@@ -1,0 +1,60 @@
+name: Promote Freight
+
+on:
+  pull_request:
+    types:
+      - opened
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  render-and-merge:
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.pull_request.title, 'Promote Freight')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          # Ensure we can push back to the branch
+          fetch-depth: 0
+
+      - name: Extract stage from PR title
+        id: extract
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          # Title format: "Promote Freight <hash> to <stage>"
+          STAGE=$(echo "$PR_TITLE" | awk '{print $NF}')
+          echo "stage=$STAGE" >> "$GITHUB_OUTPUT"
+
+      - name: Install Kustomize
+        run: |
+          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+          sudo mv kustomize /usr/local/bin/
+
+      - name: Run render.sh
+        run: |
+          chmod +x ./render.sh
+          ./render.sh "${{ steps.extract.outputs.stage }}"
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "Auto-render manifests for ${{ steps.extract.outputs.stage }}"
+            git push
+          else
+            echo "No changes to commit."
+          fi
+
+      - name: Merge the pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr merge ${{ github.event.pull_request.number }} --merge

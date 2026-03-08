@@ -35,3 +35,11 @@ kubectl apply -f k8s/argo/dev/application.yaml
 kubectl apply -f k8s/argo/test/application.yaml
 kubectl apply -f k8s/argo/prod/application.yaml
 ```
+1. Create a Kargo `secrets.yaml` from `secrets-template.yaml`
+1. Deploy the Kargo configurations
+```bash
+kubectl apply -f k8s/kargo/secrets.yaml
+kubectl apply -f k8s/kargo/kargo.yaml
+```
+1. Kargo will automatically pick up a new version of nginx and create a new Freight
+1. Drag the freight onto dev to kick off the deployment process.
