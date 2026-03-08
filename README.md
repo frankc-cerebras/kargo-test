@@ -5,16 +5,16 @@ This tests specific applications of Kargo.
 ## Instructions
 
 1. Install Demo Kargo/Argo after Docker Desktop's Kubernetes support is enabled: `curl -L https://raw.githubusercontent.com/akuity/kargo/main/hack/quickstart/install.sh | sh`
-  1. You may have to reset Argo password:
-    ```bash
-    BCRYPT_HASH=$(argocd account bcrypt --password "adminadmin")
-    kubectl -n argocd patch secret argocd-secret \
-    --type='merge' \
-    -p='{"stringData": {
-    "admin.password": "'$BCRYPT_HASH'",
-    "admin.passwordMtime": "'$(date -u +'%Y-%m-%dT%H:%M:%SZ')'"
-    }}'
-    ```
+    1. You may have to reset Argo password: 
+        ```bash
+        BCRYPT_HASH=$(argocd account bcrypt --password "adminadmin")
+        kubectl -n argocd patch secret argocd-secret \
+        --type='merge' \
+        -p='{"stringData": {
+        "admin.password": "'$BCRYPT_HASH'",
+        "admin.passwordMtime": "'$(date -u +'%Y-%m-%dT%H:%M:%SZ')'"
+        }}'
+        ```
 1. Make sure that you can visit Argo at http://localhost:31080/ (username: `admin`, password: `adminadmin`) and Kargo at http://localhost:31081/ (default password: `admin`)
 1. Fork this repository
 1. Get a GitHub Personal Access Token
