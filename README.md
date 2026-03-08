@@ -44,8 +44,8 @@ Deploy the initial manifest files to simulate an existing environment prior to K
 ```bash
 kubectl apply -f k8s/rendered/dev/manifest.yaml
 kubectl apply -f k8s/rendered/test/manifest.yaml
-kubectl apply -f k8s/rendered/prod_dc1/manifest.yaml
-kubectl apply -f k8s/rendered/prod_dc2/manifest.yaml
+kubectl apply -f k8s/rendered/prod-dc1/manifest.yaml
+kubectl apply -f k8s/rendered/prod-dc2/manifest.yaml
 ```
 
 Verify the services are running. By default, they use `nginx` version `1.25`:
@@ -59,8 +59,8 @@ Apply the Argo CD application configurations:
 ```bash
 kubectl apply -k k8s/argo/dev
 kubectl apply -k k8s/argo/test
-kubectl apply -k k8s/argo/prod_dc1
-kubectl apply -k k8s/argo/prod_dc2
+kubectl apply -k k8s/argo/prod-dc1
+kubectl apply -k k8s/argo/prod-dc2
 ```
 
 Deploy the Kargo warehouse and stages, along with your created secrets:
@@ -79,4 +79,4 @@ Once configured, Kargo will automatically detect new upstream versions (e.g., of
    curl -v http://localhost:32050
    ```
    The service should now be updated to the latest stable version of `nginx` (e.g., `1.28`).
-3. **Promote Further**: Repeat the promotion process for the `test`, `prod_dc1`, and `prod_dc2` environments as desired.
+3. **Promote Further**: Repeat the promotion process for the `test`, `prod-dc1`, and `prod-dc2` environments as desired.

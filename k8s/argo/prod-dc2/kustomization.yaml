@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - ../base
 
-nameSuffix: -prod_dc1
+nameSuffix: -prod-dc2
 
 patches:
   - patch: |-
@@ -14,7 +14,7 @@ patches:
         name: kargo-test
         namespace: argocd
         annotations:
-          kargo.akuity.io/authorized-stage: kargo-test:prod_dc1
+          kargo.akuity.io/authorized-stage: kargo-test:prod-dc2
       spec:
         source:
-          path: k8s/rendered/prod_dc1
+          path: k8s/rendered/prod-dc2

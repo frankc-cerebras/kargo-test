@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-nameSuffix: -prod_dc1
+nameSuffix: -prod-dc2
 
 resources:
 - ../../base
@@ -16,11 +16,11 @@ patches:
 - patch: |-
     - op: replace
       path: /spec/ports/0/nodePort
-      value: 32052
+      value: 32053
   target:
     kind: Service
     name: kargo-test
 labels:
 - includeSelectors: true
   pairs:
-    app: kargo-test-prod_dc1
+    app: kargo-test-prod-dc2
