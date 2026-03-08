@@ -54,6 +54,8 @@ Verify the services are running. By default, they use `nginx` version `1.25` (as
 - **Prod DC1**: `curl -v http://localhost:32052`
 - **Prod DC2**: `curl -v http://localhost:32053`
 
+![curl request to dev environment](images/initial-state-curl.png?raw=true "curl request to dev environment")
+
 ### 5. Deploy Argo CD and Kargo Configurations
 Apply the Argo CD application configurations:
 ```bash
@@ -63,20 +65,54 @@ kubectl apply -k k8s/argo/prod-dc1
 kubectl apply -k k8s/argo/prod-dc2
 ```
 
+You can visit Argo CD at http://localhost:31080/ to view the state of the applications.
+
+![Argo CD initial state](images/argo-initial-state.png?raw=true "Argo CD initial state")
+
+You may want to synchronize the Argo CD cluster in the GUI at this point, so that Argo can add its annotations. You can do so by clicking on the Sync Apps button on the Applications page.
+
+![Argo CD initial sync](images/argo-initial-sync.png?raw=true "Argo CD initial sync")
+
 Deploy the Kargo warehouse and stages, along with your created secrets:
 ```bash
 kubectl apply -f k8s/kargo/kargo.yaml
 kubectl apply -f k8s/kargo/secrets.yaml
 ```
 
+You can visit Kargo at http://localhost:31081/ to view the state of the Kargo deployment pipeline.
+
+![Kargo initial state](images/kargo-initial-state.png?raw=true "Kargo initial state")
+
 ## Deployment Workflow
 
 Once configured, Kargo will automatically detect new upstream versions (e.g., of `nginx:stable`) and create a new **Freight**.
 
-1. **Promote to Dev**: In the Kargo UI, drag the newly created Freight onto the `dev` stage to initiate the deployment. *(Note: If GitHub Actions are enabled on your fork (it usually is be for public repositories), the rendering and merging process will be performed automatically).*
-2. **Verify Deployment**: After the Argo CD sync completes, test the Dev endpoint again:
-   ```bash
-   curl -v http://localhost:32050
-   ```
-   The service should now be updated to the latest stable version of `nginx` (e.g., `1.28`).
-3. **Promote Further**: Repeat the promotion process for the `test`, `prod-dc1`, and `prod-dc2` environments as desired.
+**Promote to Dev**: In the Kargo UI, drag the newly created Freight onto the `dev` stage to initiate the deployment. 
+
+*Note: If GitHub Actions are enabled on your fork (it usually is be for public repositories), the rendering and merging process will be performed automatically.*
+
+*Note: You can speed up Kargo's synchronization with GitHub by clicking the refresh button to force Kargo to pull the latest GitHub status once the PR has been merged successfully.*
+
+![Kargo drag freight to dev](images/kargo-drag-to-dev.png?raw=true "Kargo drag freight to dev")
+
+![Kargo promote screen](images/kargo-promote-screen.png?raw=true "Kargo promote screen")
+
+![Kargo promotion in progress](images/kargo-promote-in-progress.png?raw=true "Kargo promotion in progress")
+
+![Github pull request completed](images/github-pr-merged.png?raw=true "GitHub pull request automatically completed")
+
+![Kargo promotion succeeded](images/kargo-promote-success.png?raw=true "Kargo promotion succeeded")
+
+![Kargo state after dev deployment succeeded](images/kargo-state-after-dev.png?raw=true "Kargo state after dev deployment")
+
+**Verify Deployment**: After the Argo CD sync completes, test the Dev endpoint again:
+
+```bash
+curl -v http://localhost:32050
+```
+
+The service should now be updated to the latest stable version of `nginx` (e.g., `1.28`).
+
+![curl request to dev environment after deployment](images/deployed-state-curl.png?raw=true "curl request to dev environment after deployment")
+
+**Promote Further**: Repeat the promotion process for the `test`, `prod-dc1`, and `prod-dc2` environments as desired.
