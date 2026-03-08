@@ -4,19 +4,23 @@ kind: Kustomization
 nameSuffix: -test
 
 resources:
-  - ../../base
-  - configmap.yaml
+- ../../base
+- configmap.yaml
 
 images:
-  - name: nginx
-    newName: public.ecr.aws/nginx/nginx
-    newTag: "1.28"
+- name: nginx
+  newName: public.ecr.aws/nginx/nginx
+  newTag: "1.28"
 
 patches:
-- target:
-    kind: Service
-    name: kargo-test
-  patch: |-
+- patch: |-
     - op: replace
       path: /spec/ports/0/nodePort
       value: 32051
+  target:
+    kind: Service
+    name: kargo-test
+labels:
+- includeSelectors: true
+  pairs:
+    app: kargo-test-test

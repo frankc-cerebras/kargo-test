@@ -14,11 +14,15 @@ data:
     </html>
 kind: ConfigMap
 metadata:
+  labels:
+    app: kargo-test-prod
   name: kargo-test-content-prod
 ---
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app: kargo-test-prod
   name: kargo-test-prod
 spec:
   ports:
@@ -27,22 +31,24 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    app: kargo-test
+    app: kargo-test-prod
   type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    app: kargo-test-prod
   name: kargo-test-prod
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kargo-test
+      app: kargo-test-prod
   template:
     metadata:
       labels:
-        app: kargo-test
+        app: kargo-test-prod
     spec:
       containers:
       - image: public.ecr.aws/nginx/nginx:1.28
