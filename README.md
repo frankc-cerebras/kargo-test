@@ -33,8 +33,8 @@ This tests specific applications of Kargo.
 1. Create a Kargo `secrets.yaml` from `secrets-template.yaml`
 1. Deploy the Kargo configurations
     ```bash
-    kubectl apply -f k8s/kargo/secrets.yaml
     kubectl apply -f k8s/kargo/kargo.yaml
+    kubectl apply -f k8s/kargo/secrets.yaml
     ```
 1. Kargo will automatically pick up a new version of nginx and create a new Freight
 1. Drag the freight onto `dev` to kick off the deployment process. If Github workflows is enabled in this repository, the rendering and merging is automatic.

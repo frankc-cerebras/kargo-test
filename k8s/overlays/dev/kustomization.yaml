@@ -10,7 +10,7 @@ resources:
 images:
 - name: nginx
   newName: public.ecr.aws/nginx/nginx
-  newTag: "1.28"
+  newTag: "1.25"
 
 patches:
 - patch: |-
