@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kargo-test-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:frankc-cerebras/kargo-test.git
+    targetRevision: HEAD
+    path: rendered/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prod
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
