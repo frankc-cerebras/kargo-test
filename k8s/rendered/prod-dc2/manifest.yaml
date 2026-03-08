@@ -51,7 +51,7 @@ spec:
         app: kargo-test-prod-dc2
     spec:
       containers:
-      - image: public.ecr.aws/nginx/nginx:1.25
+      - image: public.ecr.aws/nginx/nginx:stable@sha256:27d6207bfd9614b1df6a86b5f9ca64e5b7f6d18d08d6243806cf1c52ca3b72e7
         name: nginx
         volumeMounts:
         - mountPath: /usr/share/nginx/html
