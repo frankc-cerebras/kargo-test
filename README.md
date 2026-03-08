@@ -1,40 +1,83 @@
-# kargo-test
+# Kargo Test Repository
 
-This tests specific applications of Kargo.
+This repository contains a demonstration and testing environment for [Kargo](https://kargo.akuity.io/), specifically focusing on application delivery workflows.
 
-## Instructions
+## Prerequisites
 
-1. Install Demo Kargo/Argo after Docker Desktop's Kubernetes support is enabled: `curl -L https://raw.githubusercontent.com/akuity/kargo/main/hack/quickstart/install.sh | sh`
-    1. You may have to reset Argo password: 
-        ```bash
-        BCRYPT_HASH=$(argocd account bcrypt --password "adminadmin")
-        kubectl -n argocd patch secret argocd-secret \
-        --type='merge' \
-        -p='{"stringData": {
-        "admin.password": "'$BCRYPT_HASH'",
-        "admin.passwordMtime": "'$(date -u +'%Y-%m-%dT%H:%M:%SZ')'"
-        }}'
-        ```
-1. Make sure that you can visit Argo at http://localhost:31080/ (username: `admin`, password: `adminadmin`) and Kargo at http://localhost:31081/ (default password: `admin`)
-1. Fork this repository
-1. Get a GitHub Personal Access Token
-1. Deploy the base services (this way we show that we can migrate existing services/deployments)
-    ```bash
-    kubectl apply -f k8s/rendered/dev/manifest.yaml
-    kubectl apply -f k8s/rendered/test/manifest.yaml
-    kubectl apply -f k8s/rendered/prod/manifest.yaml
-    ```
-1. Change the Repo URLs in the follow files and deploy the Argo configurations
-    ```bash
-    kubectl apply -f k8s/argo/dev/application.yaml
-    kubectl apply -f k8s/argo/test/application.yaml
-    kubectl apply -f k8s/argo/prod/application.yaml
-    ```
-1. Create a Kargo `secrets.yaml` from `secrets-template.yaml`
-1. Deploy the Kargo configurations
-    ```bash
-    kubectl apply -f k8s/kargo/kargo.yaml
-    kubectl apply -f k8s/kargo/secrets.yaml
-    ```
-1. Kargo will automatically pick up a new version of nginx and create a new Freight
-1. Drag the freight onto `dev` to kick off the deployment process. If Github workflows is enabled in this repository, the rendering and merging is automatic.
+Before getting started, ensure you have the following installed:
+- Docker Desktop with Kubernetes support enabled.
+- A GitHub Personal Access Token.
+- `curl` and `kubectl` command-line tools.
+
+## Setup Instructions
+
+### 1. Install Kargo and Argo CD
+Install the demo Kargo and Argo CD environments using the official quickstart script:
+```bash
+curl -L https://raw.githubusercontent.com/akuity/kargo/main/hack/quickstart/install.sh | sh
+```
+
+*Note: You will likely need to reset the admin password to ArgoCD.*
+```bash
+BCRYPT_HASH=$(argocd account bcrypt --password "adminadmin")
+kubectl -n argocd patch secret argocd-secret \
+  --type='merge' \
+  -p='{"stringData": {
+    "admin.password": "'$BCRYPT_HASH'",
+    "admin.passwordMtime": "'$(date -u +'%Y-%m-%dT%H:%M:%SZ')'"
+  }}'
+```
+
+### 2. Verify Installation
+Ensure both services are accessible:
+- **Argo CD**: http://localhost:31080/ (Username: `admin`, Password: `adminadmin`)
+- **Kargo**: http://localhost:31081/ (Password: `admin` by default)
+
+### 3. Repository Configuration
+1. Fork this repository to your own GitHub account.
+2. In the following files, update the repository URLs to match your fork:
+   - `k8s/argo/dev/application.yaml`
+   - `k8s/argo/test/application.yaml`
+   - `k8s/argo/prod/application.yaml`
+3. Create a Kargo `secrets.yaml` file by copying the provided `secrets-template.yaml` (ensure you have populated it with your GitHub token).
+
+### 4. Deploy Base Services
+Deploy the initial manifest files to simulate an existing environment prior to Kargo management:
+```bash
+kubectl apply -f k8s/rendered/dev/manifest.yaml
+kubectl apply -f k8s/rendered/test/manifest.yaml
+kubectl apply -f k8s/rendered/prod/manifest.yaml
+```
+
+Verify the services are running. By default, they use `nginx` version `1.25`:
+- **Dev**: `curl -v http://localhost:32050`
+- **Test**: `curl -v http://localhost:32051`
+- **Prod**: `curl -v http://localhost:32052`
+
+### 5. Deploy Argo CD and Kargo Configurations
+Open the files below, and chagne the `.spec.source.repoURL` to your repository. After that, apply the Argo CD application configurations:
+```bash
+kubectl apply -f k8s/argo/dev/application.yaml
+kubectl apply -f k8s/argo/test/application.yaml
+kubectl apply -f k8s/argo/prod/application.yaml
+```
+
+Create your own `secrets.yaml` using the provided `secrets-template.yaml`.
+
+Deploy the Kargo warehouse and stages, along with your created secrets:
+```bash
+kubectl apply -f k8s/kargo/kargo.yaml
+kubectl apply -f k8s/kargo/secrets.yaml
+```
+
+## Deployment Workflow
+
+Once configured, Kargo will automatically detect new upstream versions (e.g., of `nginx`) and create a new **Freight**.
+
+1. **Promote to Dev**: In the Kargo UI, drag the newly created Freight onto the `dev` stage to initiate the deployment. *(Note: If GitHub Actions are enabled on your fork, the rendering and merging process will be performed automatically).*
+2. **Verify Deployment**: After the Argo CD sync completes, test the Dev endpoint again:
+   ```bash
+   curl -v http://localhost:32050
+   ```
+   The service should now be updated to the latest stable version of `nginx` (e.g., `1.28`).
+3. **Promote Further**: Repeat the promotion process for the `test` and `prod` environments as desired.
