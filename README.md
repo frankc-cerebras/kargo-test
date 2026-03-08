@@ -72,7 +72,7 @@ kubectl apply -f k8s/kargo/secrets.yaml
 
 Once configured, Kargo will automatically detect new upstream versions (e.g., of `nginx`) and create a new **Freight**.
 
-1. **Promote to Dev**: In the Kargo UI, drag the newly created Freight onto the `dev` stage to initiate the deployment. *(Note: If GitHub Actions are enabled on your fork, the rendering and merging process will be performed automatically).*
+1. **Promote to Dev**: In the Kargo UI, drag the newly created Freight onto the `dev` stage to initiate the deployment. *(Note: If GitHub Actions are enabled on your fork (it usually is be for public repositories), the rendering and merging process will be performed automatically).*
 2. **Verify Deployment**: After the Argo CD sync completes, test the Dev endpoint again:
    ```bash
    curl -v http://localhost:32050
