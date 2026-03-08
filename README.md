@@ -55,14 +55,12 @@ Verify the services are running. By default, they use `nginx` version `1.25`:
 - **Prod**: `curl -v http://localhost:32052`
 
 ### 5. Deploy Argo CD and Kargo Configurations
-Open the files below, and chagne the `.spec.source.repoURL` to your repository. After that, apply the Argo CD application configurations:
+Apply the Argo CD application configurations:
 ```bash
 kubectl apply -f k8s/argo/dev/application.yaml
 kubectl apply -f k8s/argo/test/application.yaml
 kubectl apply -f k8s/argo/prod/application.yaml
 ```
-
-Create your own `secrets.yaml` using the provided `secrets-template.yaml`.
 
 Deploy the Kargo warehouse and stages, along with your created secrets:
 ```bash
