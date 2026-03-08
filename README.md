@@ -48,7 +48,7 @@ kubectl apply -f k8s/rendered/prod-dc1/manifest.yaml
 kubectl apply -f k8s/rendered/prod-dc2/manifest.yaml
 ```
 
-Verify the services are running. By default, they use `nginx` version `1.25`:
+Verify the services are running. By default, they use `nginx` version `1.25` (as shown in the `Server` header in the response):
 - **Dev**: `curl -v http://localhost:32050`
 - **Test**: `curl -v http://localhost:32051`
 - **Prod DC1**: `curl -v http://localhost:32052`
