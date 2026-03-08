@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kargo-test-content
+data:
+  index.html: |-
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>prod_dc2</title>
+    </head>
+    <body>
+
+    <h1>prod_dc2</h1>
+
+    </body>
+    </html>

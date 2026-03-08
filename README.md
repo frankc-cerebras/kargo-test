@@ -35,10 +35,8 @@ Ensure both services are accessible:
 
 ### 3. Repository Configuration
 1. Fork this repository to your own GitHub account.
-2. In the following files, update the repository URLs to match your fork:
-   - `k8s/argo/dev/application.yaml`
-   - `k8s/argo/test/application.yaml`
-   - `k8s/argo/prod/application.yaml`
+2. In the following file, update the repository URL to match your fork:
+   - `k8s/argo/base/application.yaml`
 3. Create a Kargo `secrets.yaml` file by copying the provided `secrets-template.yaml` (ensure you have populated it with your GitHub token).
 
 ### 4. Deploy Base Services
@@ -46,20 +44,23 @@ Deploy the initial manifest files to simulate an existing environment prior to K
 ```bash
 kubectl apply -f k8s/rendered/dev/manifest.yaml
 kubectl apply -f k8s/rendered/test/manifest.yaml
-kubectl apply -f k8s/rendered/prod/manifest.yaml
+kubectl apply -f k8s/rendered/prod_dc1/manifest.yaml
+kubectl apply -f k8s/rendered/prod_dc2/manifest.yaml
 ```
 
 Verify the services are running. By default, they use `nginx` version `1.25`:
 - **Dev**: `curl -v http://localhost:32050`
 - **Test**: `curl -v http://localhost:32051`
-- **Prod**: `curl -v http://localhost:32052`
+- **Prod DC1**: `curl -v http://localhost:32052`
+- **Prod DC2**: `curl -v http://localhost:32053`
 
 ### 5. Deploy Argo CD and Kargo Configurations
 Apply the Argo CD application configurations:
 ```bash
-kubectl apply -f k8s/argo/dev/application.yaml
-kubectl apply -f k8s/argo/test/application.yaml
-kubectl apply -f k8s/argo/prod/application.yaml
+kubectl apply -k k8s/argo/dev
+kubectl apply -k k8s/argo/test
+kubectl apply -k k8s/argo/prod_dc1
+kubectl apply -k k8s/argo/prod_dc2
 ```
 
 Deploy the Kargo warehouse and stages, along with your created secrets:
@@ -70,7 +71,7 @@ kubectl apply -f k8s/kargo/secrets.yaml
 
 ## Deployment Workflow
 
-Once configured, Kargo will automatically detect new upstream versions (e.g., of `nginx`) and create a new **Freight**.
+Once configured, Kargo will automatically detect new upstream versions (e.g., of `nginx:stable`) and create a new **Freight**.
 
 1. **Promote to Dev**: In the Kargo UI, drag the newly created Freight onto the `dev` stage to initiate the deployment. *(Note: If GitHub Actions are enabled on your fork (it usually is be for public repositories), the rendering and merging process will be performed automatically).*
 2. **Verify Deployment**: After the Argo CD sync completes, test the Dev endpoint again:
@@ -78,4 +79,4 @@ Once configured, Kargo will automatically detect new upstream versions (e.g., of
    curl -v http://localhost:32050
    ```
    The service should now be updated to the latest stable version of `nginx` (e.g., `1.28`).
-3. **Promote Further**: Repeat the promotion process for the `test` and `prod` environments as desired.
+3. **Promote Further**: Repeat the promotion process for the `test`, `prod_dc1`, and `prod_dc2` environments as desired.

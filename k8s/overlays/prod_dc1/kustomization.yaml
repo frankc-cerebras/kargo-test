@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-nameSuffix: -prod
+nameSuffix: -prod_dc1
 
 resources:
 - ../../base
@@ -23,4 +23,4 @@ patches:
 labels:
 - includeSelectors: true
   pairs:
-    app: kargo-test-prod
+    app: kargo-test-prod_dc1

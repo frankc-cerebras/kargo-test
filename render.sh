@@ -10,8 +10,8 @@ if [[ -z "$STAGE" ]]; then
     exit 1
 fi
 
-if [[ "$STAGE" != "dev" && "$STAGE" != "test" && "$STAGE" != "prod" ]]; then
-    echo "Error: Stage must be one of: dev, test, prod"
+if [[ "$STAGE" != "dev" && "$STAGE" != "test" && "$STAGE" != "prod_dc1" && "$STAGE" != "prod_dc2" ]]; then
+    echo "Error: Stage must be one of: dev, test, prod_dc1, prod_dc2"
     exit 1
 fi
 

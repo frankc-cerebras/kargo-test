@@ -128,7 +128,7 @@ spec:
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
 metadata:
-  name: prod
+  name: prod_dc1
   namespace: kargo-test
 spec:
   requestedFreight:
@@ -149,12 +149,12 @@ spec:
                 path: src
         - uses: kustomize-set-image
           config:
-            path: src/k8s/overlays/prod
+            path: src/k8s/overlays/prod_dc1
         - uses: git-commit
           as: commit
           config:
             path: src
-            message: "Update image tag for prod"
+            message: "Update image tag for prod_dc1"
         - uses: git-push
           as: gitPush
           config:
@@ -166,7 +166,7 @@ spec:
             repoURL: https://github.com/frankc-cerebras/kargo-test.git
             sourceBranch: ${{ outputs.gitPush.branch }}
             targetBranch: main
-            title: "Promote Freight ${{ ctx.targetFreight.name }} to prod"
+            title: "Promote Freight ${{ ctx.targetFreight.name }} to prod_dc1"
         - uses: git-wait-for-pr
           config:
             repoURL: https://github.com/frankc-cerebras/kargo-test.git
@@ -174,5 +174,57 @@ spec:
         - uses: argocd-update
           config:
             apps:
-              - name: kargo-test-prod
+              - name: kargo-test-prod_dc1
+                namespace: argocd
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: prod_dc2
+  namespace: kargo-test
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: kargo-test
+      sources:
+        stages:
+          - staging
+  promotionTemplate:
+    spec:
+      steps:
+        - uses: git-clone
+          config:
+            repoURL: https://github.com/frankc-cerebras/kargo-test.git
+            checkout:
+              - branch: main
+                path: src
+        - uses: kustomize-set-image
+          config:
+            path: src/k8s/overlays/prod_dc2
+        - uses: git-commit
+          as: commit
+          config:
+            path: src
+            message: "Update image tag for prod_dc2"
+        - uses: git-push
+          as: gitPush
+          config:
+            generateTargetBranch: true
+            path: src
+        - uses: git-open-pr
+          as: openPr
+          config:
+            repoURL: https://github.com/frankc-cerebras/kargo-test.git
+            sourceBranch: ${{ outputs.gitPush.branch }}
+            targetBranch: main
+            title: "Promote Freight ${{ ctx.targetFreight.name }} to prod_dc2"
+        - uses: git-wait-for-pr
+          config:
+            repoURL: https://github.com/frankc-cerebras/kargo-test.git
+            prNumber: ${{ outputs.openPr.pr.id }}
+        - uses: argocd-update
+          config:
+            apps:
+              - name: kargo-test-prod_dc2
                 namespace: argocd

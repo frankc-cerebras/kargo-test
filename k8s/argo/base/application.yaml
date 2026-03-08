@@ -1,16 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kargo-test-dev
+  name: kargo-test
   namespace: argocd
-  annotations:
-    kargo.akuity.io/authorized-stage: kargo-test:dev
 spec:
   project: default
   source:
     repoURL: https://github.com/frankc-cerebras/kargo-test
     targetRevision: HEAD
-    path: k8s/rendered/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: default

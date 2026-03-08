@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../base
+
+nameSuffix: -dev
+
+patches:
+  - patch: |-
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: kargo-test
+        namespace: argocd
+        annotations:
+          kargo.akuity.io/authorized-stage: kargo-test:dev
+      spec:
+        source:
+          path: k8s/rendered/dev
