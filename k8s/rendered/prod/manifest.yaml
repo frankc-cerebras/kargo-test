@@ -1,10 +1,28 @@
 apiVersion: v1
+data:
+  index.html: |-
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>prod</title>
+    </head>
+    <body>
+
+    <h1>prod</h1>
+
+    </body>
+    </html>
+kind: ConfigMap
+metadata:
+  name: kargo-test-content-prod
+---
+apiVersion: v1
 kind: Service
 metadata:
-  name: kargo-test
+  name: kargo-test-prod
 spec:
   ports:
-  - nodePort: placeholder
+  - nodePort: 32052
     port: 3000
     protocol: TCP
     targetPort: 80
@@ -15,7 +33,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kargo-test
+  name: kargo-test-prod
 spec:
   replicas: 1
   selector:
@@ -27,7 +45,7 @@ spec:
         app: kargo-test
     spec:
       containers:
-      - image: public.ecr.aws/nginx/nginx:1.27
+      - image: public.ecr.aws/nginx/nginx:1.28
         name: nginx
         volumeMounts:
         - mountPath: /usr/share/nginx/html
@@ -35,5 +53,5 @@ spec:
           readOnly: true
       volumes:
       - configMap:
-          name: kargo-test-content
+          name: kargo-test-content-prod
         name: content

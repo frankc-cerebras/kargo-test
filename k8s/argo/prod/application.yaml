@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: kargo-test-prod
   namespace: argocd
+  annotations:
+    kargo.akuity.io/authorized-stage: kargo-test:prod
 spec:
   project: default
   source:
